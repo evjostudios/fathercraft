@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root {
     --green: #EC4899; --green-bright: #F9A8D4; --green-dark: #9D2463;
@@ -87,6 +88,10 @@
     padding: 1px 8px; color: var(--green-bright); font-size: 13px; }
 
   .mods-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .pack-btn { display: block; width: 100%; margin-bottom: 22px; font-family: var(--font-pixel); font-size: 12px;
+    color: #2A0A18; background: var(--green); border: none; border-radius: 12px; padding: 20px; cursor: pointer; }
+  .pack-btn:hover:not(:disabled) { background: var(--green-bright); }
+  .pack-btn:disabled { opacity: 0.75; cursor: wait; }
   .mod-card { background: linear-gradient(170deg, var(--surface2), var(--surface)); border: 1px solid var(--border);
     border-radius: 14px; padding: 24px; display: flex; flex-direction: column; transition: transform .25s, border-color .25s; }
   .mod-card:hover { transform: translateY(-5px); border-color: rgba(236,72,153,0.5); }
@@ -131,7 +136,6 @@
   <img class="hero-creeper" src="img/creeper.png" alt="Creeper">
   <div class="hero-badge" id="heroBadge">● JAVA · 1.20.1</div>
   <h1>FATHER<br><span class="gr">CRAFT</span></h1>
-  <p class="hero-sub">El servidor donde la familia juega. Copia la IP, instala los mods y entra.</p>
   <div class="ip-box">
     <code id="ipText">...</code>
     <button id="ipBtn">COPIAR</button>
@@ -158,7 +162,8 @@
 <section class="block" id="mods">
   <div class="sec-tag">// DESCARGAS</div>
   <h2 class="sec-title">MODS DEL SERVIDOR</h2>
-  <p class="sec-desc">Instala estos mods para entrar. Todos deben coincidir con la versión del servidor.</p>
+  <p class="sec-desc">Baja el pack completo o mod por mod. Descomprime el .zip dentro de tu carpeta <b>mods</b> y listo.</p>
+  <button class="pack-btn" id="packBtn">⬇ Descargar pack completo (.zip)</button>
   <div class="mods-grid" id="modsGrid"></div>
 </section>
 
@@ -244,6 +249,39 @@ document.getElementById('modsGrid').innerHTML = CONFIG.mods.map(m => `
     <div class="mod-desc">${m.descripcion}</div>
     <a class="mod-dl" href="${m.url}" ${/^https?:/.test(m.url) ? 'target="_blank" rel="noopener"' : 'download'}>Descargar ⬇</a>
   </div>`).join('');
+
+document.getElementById('packBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('packBtn');
+  const original = '⬇ Descargar pack completo (.zip)';
+  btn.disabled = true;
+  try {
+    const zip = new JSZip();
+    let i = 0;
+    for (const m of CONFIG.mods) {
+      i++;
+      btn.textContent = `Armando pack... ${Math.round(i / CONFIG.mods.length * 100)}%`;
+      const r = await fetch(m.url);
+      if (!r.ok) throw new Error(m.nombre);
+      const name = decodeURIComponent(m.url.split('/').pop());
+      zip.file(name, await r.blob());
+    }
+    btn.textContent = 'Generando zip...';
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'FatherCraft-mods.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    btn.textContent = original;
+    toast('Pack descargado: descomprímelo en tu carpeta mods ✅');
+  } catch (e) {
+    btn.textContent = original;
+    toast('Falló la descarga, intenta mod por mod ⚠️');
+  }
+  btn.disabled = false;
+});
 </script>
 </body>
 </html>
