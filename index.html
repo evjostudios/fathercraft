@@ -11,7 +11,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
 <style>
   :root {
     --green: #EC4899; --green-bright: #F9A8D4; --green-dark: #9D2463;
@@ -66,7 +73,8 @@
     text-shadow: 4px 4px 0 rgba(0,0,0,0.55), 0 0 44px rgba(236,72,153,0.25); margin-bottom: 10px; }
   .hero-creeper { width: clamp(190px, 26vw, 260px); height: clamp(190px, 26vw, 260px);
     animation: creepfloat 4s ease-in-out infinite; margin-bottom: 6px; }
-  .hero-creeper model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+  .hero-creeper canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+  .hero-creeper canvas:active { cursor: grabbing; }
   @keyframes creepfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   .hero h1 .gr { color: var(--green-bright); }
   .hero-sub { color: var(--muted); font-size: 18px; margin: 18px 0 34px; max-width: 560px; }
@@ -150,7 +158,7 @@
 </nav>
 
 <header class="hero">
-  <div class="hero-creeper" id="creeperWrap"><model-viewer id="creeperViewer" src="img/creeper.glb" poster="img/creeper.png" camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="30deg" min-camera-orbit="auto 70deg auto" max-camera-orbit="auto 100deg auto" shadow-intensity="1" exposure="1.05" interaction-prompt="none" camera-target="auto auto auto" alt="Creeper"></model-viewer></div>
+  <div class="hero-creeper" id="creeperWrap"><canvas id="creeperCanvas"></canvas></div>
   <div class="hero-titlewrap">
   <div class="hero-badge" id="heroBadge">● JAVA · 1.20.1</div>
   <h1>FATHER<span class="gr">CRAFT</span></h1>
@@ -316,7 +324,7 @@ document.getElementById('packBtn').addEventListener('click', async () => {
 </script>
 
 <script>
-// Fix de materiales como en XKT: opaco + mate
+// Creeper 3D: solo giro con inercia larga (sin zoom ni mover)
 (function creeperFix() {
   const mv = document.getElementById('creeperViewer');
   if (!mv) return;
@@ -336,6 +344,94 @@ document.getElementById('packBtn').addEventListener('click', async () => {
       });
     } catch (e) {}
   }, { once: true });
+})();
+</script>
+
+<script type="module">
+// Trompo: el creeper gira, lo agitas y sigue girando con inercia
+(async function creeperTop() {
+  const canvas = document.getElementById('creeperCanvas');
+  const wrap = document.getElementById('creeperWrap');
+  try {
+    const THREE = await import('three');
+    const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+    const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    const scene = new THREE.Scene();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 50);
+    const key = new THREE.DirectionalLight(0xffffff, 1.4);
+    key.position.set(2.5, 4, 3.5);
+    scene.add(key);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x331122, 0.45));
+    const gltf = await new GLTFLoader().loadAsync('img/creeper.glb');
+    const model = gltf.scene;
+    model.traverse(o => {
+      if (o.isMesh) {
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach(m => { if (m) m.side = THREE.DoubleSide; });
+      }
+    });
+    scene.add(model);
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const radius = Math.max(size.x, size.y, size.z);
+    camera.position.set(center.x, center.y + radius * 0.18, center.z + radius * 2.2);
+    camera.lookAt(center);
+    camera.updateProjectionMatrix();
+
+    const BASE = 0.35, FRICTION = 0.55;
+    let vel = 0, tilt = 0.08, dragging = false, px = 0, py = 0, last = 0;
+    const sizeCanvas = () => {
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    sizeCanvas();
+    window.addEventListener('resize', sizeCanvas);
+    canvas.addEventListener('pointerdown', e => {
+      dragging = true; px = e.clientX; py = e.clientY; last = performance.now(); vel = 0;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      const now = performance.now();
+      const dt = Math.max(1, now - last) / 1000;
+      last = now;
+      const dx = e.clientX - px, dy = e.clientY - py;
+      px = e.clientX; py = e.clientY;
+      model.rotation.y += dx * 0.009;
+      tilt = Math.max(-0.2, Math.min(0.5, tilt + dy * 0.003));
+      vel = 0.7 * vel + 0.3 * ((dx * 0.009) / dt);
+      vel = Math.max(-14, Math.min(14, vel));
+    });
+    const stop = () => { dragging = false; };
+    canvas.addEventListener('pointerup', stop);
+    canvas.addEventListener('pointercancel', stop);
+    model.rotation.x = tilt;
+    let prev = performance.now();
+    (function loop() {
+      requestAnimationFrame(loop);
+      const now = performance.now();
+      const dt = Math.min(0.05, (now - prev) / 1000);
+      prev = now;
+      if (!dragging) {
+        vel += (BASE - vel) * (1 - Math.exp(-dt * (Math.abs(vel) > BASE ? FRICTION : 0.9)));
+        model.rotation.y += vel * dt;
+      }
+      model.rotation.x += (tilt - model.rotation.x) * Math.min(1, dt * 10);
+      renderer.render(scene, camera);
+    })();
+  } catch (e) {
+    wrap.innerHTML = '<img src="img/creeper.png" alt="Creeper" style="width:100%;image-rendering:pixelated;">';
+  }
 })();
 </script>
 </body>
