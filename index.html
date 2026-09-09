@@ -56,8 +56,10 @@
 
   .hero { min-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; padding: 165px 22px 70px; position: relative; }
-  .hero-badge { font-family: var(--font-pixel); font-size: 10px; color: var(--green-bright); letter-spacing: 2px;
-    border: 1px solid rgba(236,72,153,0.45); background: rgba(236,72,153,0.08); border-radius: 100px; padding: 10px 20px; margin-bottom: 28px; }
+  .hero-badge { font-family: var(--font-pixel); font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 2px;
+    border: none; background: none; padding: 0; margin: 0 0 10px 8px; display: inline-block;
+    text-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.5); }
+  .hero-titlewrap { display: inline-block; text-align: left; }
   .hero h1 { font-family: var(--font-pixel); font-size: clamp(28px, 6.5vw, 84px); line-height: 1.25; color: #fff;
     text-shadow: 4px 4px 0 rgba(0,0,0,0.55), 0 0 44px rgba(236,72,153,0.25); margin-bottom: 10px; }
   .hero-creeper { width: clamp(190px, 26vw, 260px); height: clamp(190px, 26vw, 260px);
@@ -141,8 +143,10 @@
 
 <header class="hero">
   <div class="hero-creeper" id="creeperWrap"><model-viewer id="creeperViewer" src="img/creeper.glb" poster="img/creeper.png" camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="30deg" min-camera-orbit="auto 70deg auto" max-camera-orbit="auto 100deg auto" shadow-intensity="1" exposure="1.05" interaction-prompt="none" camera-target="auto auto auto" alt="Creeper"></model-viewer></div>
+  <div class="hero-titlewrap">
   <div class="hero-badge" id="heroBadge">● JAVA · 1.20.1</div>
   <h1>FATHER<span class="gr">CRAFT</span></h1>
+  </div>
   <div class="ip-box">
     <code id="ipText">...</code>
     <button id="ipBtn">COPIAR</button>
