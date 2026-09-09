@@ -1,9 +1,11 @@
 # Carpeta de mods — FATHERCRAFT
 
-Sube aquí los `.jar` de los mods y enlázalos en el `CONFIG` de `index.html`:
+El mod oficial (`fathercraft-1.0.0.jar`, 42 MB) es muy pesado para el hosting:
+ súbelo como **Release** en GitHub (Releases → Draft new release → arrastra el
+ jar → Publish) y pega su link en el `CONFIG` de `index.html`:
 
 ```js
-{ nombre: "Mi mod", version: "1.20.1", descripcion: "...", url: "mods/mimod.jar" },
+{ nombre: "FatherCraft", version: "1.21.1", descripcion: "...", url: "https://github.com/evjostudios/fathercraft/releases/download/v1.0.0/fathercraft-1.0.0.jar" },
 ```
 
-Los enlaces relativos con `download` descargan directo sin salir de la página.
+Los archivos chicos (menos de 25 MB) sí pueden vivir aquí: `mods/archivo.jar`.

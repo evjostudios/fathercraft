@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <style>
   :root {
@@ -98,10 +97,6 @@
     padding: 1px 8px; color: var(--green-bright); font-size: 13px; }
 
   .mods-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-  .pack-btn { display: block; width: 100%; margin-bottom: 22px; font-family: var(--font-pixel); font-size: 12px;
-    color: #2A0A18; background: var(--green); border: none; border-radius: 12px; padding: 20px; cursor: pointer; }
-  .pack-btn:hover:not(:disabled) { background: var(--green-bright); }
-  .pack-btn:disabled { opacity: 0.75; cursor: wait; }
   .mod-card { background: linear-gradient(170deg, var(--surface2), var(--surface)); border: 1px solid var(--border);
     border-radius: 14px; padding: 24px; display: flex; flex-direction: column; transition: transform .25s, border-color .25s; }
   .mod-card:hover { transform: translateY(-5px); border-color: rgba(236,72,153,0.5); }
@@ -162,7 +157,7 @@
   <div class="ip-hint" id="ipHint">Toca copiar y pégala en multijugador</div>
   <div class="hero-stats">
     <div><div class="stat-num" id="statVer">1.20<span>.1</span></div><div class="stat-label">Versión</div></div>
-    <div><div class="stat-num"><span id="statMods">3</span></div><div class="stat-label">Mods</div></div>
+    <div><div class="stat-num"><span id="statMods">1</span></div><div class="stat-label">Mod</div></div>
     <div><div class="stat-num">24<span>/7</span></div><div class="stat-label">Online</div></div>
   </div>
 </header>
@@ -173,7 +168,7 @@
   <p class="sec-desc">Sin vueltas: IP, mods y a jugar.</p>
   <div class="steps">
     <div class="step"><div class="step-num">01</div><h3>Copia la IP</h3><p>Pulsa el botón copiar. La IP es <code id="stepIp">...</code></p></div>
-    <div class="step"><div class="step-num">02</div><h3>Instala los mods</h3><p>Descarga el pack de abajo (misma versión del servidor) y mételo en tu carpeta <code>mods</code>.</p></div>
+    <div class="step"><div class="step-num">02</div><h3>Instala el mod</h3><p>Descarga el mod de abajo y mételo en tu carpeta <code>mods</code>.</p></div>
     <div class="step"><div class="step-num">03</div><h3>Entra</h3><p>Minecraft → Multijugador → Añadir servidor → pega la IP → ¡a jugar!</p></div>
   </div>
 </section>
@@ -181,8 +176,7 @@
 <section class="block" id="mods">
   <div class="sec-tag">// DESCARGAS</div>
   <h2 class="sec-title">MODS DEL SERVIDOR</h2>
-  <p class="sec-desc">Baja el pack completo o mod por mod. Descomprime el .zip dentro de tu carpeta <b>mods</b> y listo.</p>
-  <button class="pack-btn" id="packBtn">⬇ Descargar pack completo (.zip)</button>
+  <p class="sec-desc">Descarga el mod oficial, mételo en tu carpeta <b>mods</b> y listo.</p>
   <div class="mods-grid" id="modsGrid"></div>
 </section>
 
@@ -209,21 +203,7 @@ const CONFIG = {
   edition: "JAVA",
   version: "1.21.1",
   mods: [
-    { nombre: "Fabric API", version: "1.21.1", descripcion: "Base obligatoria para que funcionen todos los mods Fabric.", url: "mods/jars/fabric-api-0.116.15%2B1.21.1.jar" },
-    { nombre: "Fabric Language Kotlin", version: "1.21.1", descripcion: "Lenguaje requerido por varios mods del pack.", url: "mods/jars/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar" },
-    { nombre: "Architectury API", version: "1.21.1", descripcion: "Librería intermedia que usan varios mods.", url: "mods/jars/architectury-13.0.11-fabric.jar" },
-    { nombre: "Cloth Config", version: "1.21.1", descripcion: "Librería de configuración para los menús de mods.", url: "mods/jars/cloth-config-15.0.140-fabric.jar" },
-    { nombre: "YetAnotherConfigLib", version: "1.21.1", descripcion: "Otra librería de configuración necesaria.", url: "mods/jars/yet_another_config_lib_v3-3.8.2+1.21.1-fabric.jar" },
-    { nombre: "Fzzy Config", version: "1.21.1", descripcion: "Configuración usada por Simply Swords y otros.", url: "mods/jars/fzzy_config-0.7.6+1.21.jar" },
-    { nombre: "GeckoLib", version: "1.21.1", descripcion: "Motor de animaciones para armaduras y mods.", url: "mods/jars/geckolib-fabric-1.21.1-4.8.4.jar" },
-    { nombre: "JEI", version: "1.21.1", descripcion: "Ve todas las recetas y objetos del juego.", url: "mods/jars/jei-1.21.1-fabric-19.51.0.418.jar" },
-    { nombre: "Simply Swords", version: "1.21.1", descripcion: "Espadas nuevas con habilidades únicas.", url: "mods/jars/simplyswords-fabric-1.70.2-1.21.1.jar" },
-    { nombre: "Simply Tooltips", version: "1.21.1", descripcion: "Mejora la info al pasar el mouse por los objetos.", url: "mods/jars/SimplyTooltips-fabric-0.1.5.jar" },
-    { nombre: "Voice Chat", version: "1.21.1", descripcion: "Habla por voz con los que estén cerca en el juego.", url: "mods/jars/voicechat-fabric-1.21.1-2.6.23.jar" },
-    { nombre: "Fantasy Armor", version: "1.21.1", descripcion: "Set de armaduras de fantasía.", url: "mods/jars/fantasy_armor-fabric-1.2.4-1.21.1.jar" },
-    { nombre: "Armor of the Ages", version: "1.21.1", descripcion: "Más armaduras por eras para tu personaje.", url: "mods/jars/armoroftheages-fabric-1.21.1-1.5.10.jar" },
-    { nombre: "Auth Bandz", version: "1.21.1", descripcion: "Login del servidor Bandz.", url: "mods/jars/authbandz-1.0.0-server-1.21.1.jar" },
-    { nombre: "Auth Father", version: "1.21.1", descripcion: "Login del servidor FatherCraft.", url: "mods/jars/authfather-1.0.0-server-1.21.1.jar" },
+    { nombre: "FatherCraft", version: "1.21.1", descripcion: "El mod oficial del servidor. Mételo en tu carpeta mods y entra.", url: "#" },
   ],
 };
 // ═══════════════════════════════════════════
@@ -280,39 +260,6 @@ document.getElementById('modsGrid').innerHTML = CONFIG.mods.map(m => `
     <div class="mod-desc">${m.descripcion}</div>
     <a class="mod-dl" href="${m.url}" ${/^https?:/.test(m.url) ? 'target="_blank" rel="noopener"' : 'download'}>Descargar ⬇</a>
   </div>`).join('');
-
-document.getElementById('packBtn').addEventListener('click', async () => {
-  const btn = document.getElementById('packBtn');
-  const original = '⬇ Descargar pack completo (.zip)';
-  btn.disabled = true;
-  try {
-    const zip = new JSZip();
-    let i = 0;
-    for (const m of CONFIG.mods) {
-      i++;
-      btn.textContent = `Armando pack... ${Math.round(i / CONFIG.mods.length * 100)}%`;
-      const r = await fetch(m.url);
-      if (!r.ok) throw new Error(m.nombre);
-      const name = decodeURIComponent(m.url.split('/').pop());
-      zip.file(name, await r.blob());
-    }
-    btn.textContent = 'Generando zip...';
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'FatherCraft-mods.zip';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
-    btn.textContent = original;
-    toast('Pack descargado: descomprímelo en tu carpeta mods');
-  } catch (e) {
-    btn.textContent = original;
-    toast('Falló la descarga, intenta mod por mod');
-  }
-  btn.disabled = false;
-});
 </script>
 
 <script>
