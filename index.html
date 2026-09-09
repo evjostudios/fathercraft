@@ -12,22 +12,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #5EBB2B; --green-bright: #7CFC54; --green-dark: #2E7D16;
+    --green: #EC4899; --green-bright: #F9A8D4; --green-dark: #9D2463;
     --dirt: #6B4A2B; --stone: #8a8a8a;
-    --bg: #0d120b; --surface: #141a12; --surface2: #1b2318;
+    --bg: #140b11; --surface: #1a0f15; --surface2: #221320;
     --border: rgba(255,255,255,0.08); --text: #F2F2F0; --muted: #9aa392;
     --font-pixel: 'Press Start 2P', monospace; --font-body: 'Barlow', sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-  ::selection { background: var(--green); color: #061003; }
+  ::selection { background: var(--green); color: #2A0A18; }
   a { color: inherit; }
 
   .bg-fx { position: fixed; inset: 0; z-index: -2; pointer-events: none;
     background:
-      radial-gradient(900px 500px at 80% -10%, rgba(94,187,43,0.10), transparent 60%),
-      radial-gradient(700px 500px at 10% 40%, rgba(94,187,43,0.05), transparent 55%),
+      radial-gradient(900px 500px at 80% -10%, rgba(236,72,153,0.10), transparent 60%),
+      radial-gradient(700px 500px at 10% 40%, rgba(236,72,153,0.05), transparent 55%),
       var(--bg); }
   .bg-grid { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .6;
     background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
@@ -43,23 +43,27 @@
   .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
   .nav-links a { font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); text-decoration: none; }
   .nav-links a:hover { color: #fff; }
-  .nav-ip { font-family: monospace; font-size: 13px; background: rgba(94,187,43,0.12); border: 1px solid rgba(94,187,43,0.45);
+  .nav-ip { font-family: monospace; font-size: 13px; background: rgba(236,72,153,0.12); border: 1px solid rgba(236,72,153,0.45);
     color: var(--green-bright); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
-  .nav-ip:hover { background: rgba(94,187,43,0.2); }
+  .nav-ip:hover { background: rgba(236,72,153,0.2); }
 
   .hero { min-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; padding: 120px 22px 70px; position: relative; }
   .hero-badge { font-family: var(--font-pixel); font-size: 10px; color: var(--green-bright); letter-spacing: 2px;
-    border: 1px solid rgba(94,187,43,0.45); background: rgba(94,187,43,0.08); border-radius: 100px; padding: 10px 20px; margin-bottom: 28px; }
+    border: 1px solid rgba(236,72,153,0.45); background: rgba(236,72,153,0.08); border-radius: 100px; padding: 10px 20px; margin-bottom: 28px; }
   .hero h1 { font-family: var(--font-pixel); font-size: clamp(34px, 8vw, 96px); line-height: 1.25; color: #fff;
-    text-shadow: 4px 4px 0 rgba(0,0,0,0.55), 0 0 44px rgba(94,187,43,0.25); margin-bottom: 10px; }
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.55), 0 0 44px rgba(236,72,153,0.25); margin-bottom: 10px; }
+  .hero-creeper { width: clamp(120px, 20vw, 200px); image-rendering: pixelated;
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,0.6)) drop-shadow(0 0 26px rgba(236,72,153,0.35));
+    animation: creepfloat 4s ease-in-out infinite; margin-bottom: 6px; }
+  @keyframes creepfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   .hero h1 .gr { color: var(--green-bright); }
   .hero-sub { color: var(--muted); font-size: 18px; margin: 18px 0 34px; max-width: 560px; }
   .ip-box { display: flex; align-items: center; gap: 0; max-width: 520px; width: 100%; background: #000;
-    border: 2px solid rgba(94,187,43,0.5); border-radius: 12px; overflow: hidden; box-shadow: 0 0 34px rgba(94,187,43,0.18); }
+    border: 2px solid rgba(236,72,153,0.5); border-radius: 12px; overflow: hidden; box-shadow: 0 0 34px rgba(236,72,153,0.18); }
   .ip-box code { flex: 1; font-family: monospace; font-size: clamp(15px, 3vw, 20px); color: var(--green-bright);
     padding: 16px 20px; text-align: left; overflow-x: auto; white-space: nowrap; }
-  .ip-box button { font-family: var(--font-pixel); font-size: 11px; color: #061003; background: var(--green);
+  .ip-box button { font-family: var(--font-pixel); font-size: 11px; color: #2A0A18; background: var(--green);
     border: none; padding: 0 26px; align-self: stretch; cursor: pointer; }
   .ip-box button:hover { background: var(--green-bright); }
   .ip-hint { font-size: 13px; color: var(--muted); margin-top: 12px; min-height: 20px; }
@@ -85,17 +89,17 @@
   .mods-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
   .mod-card { background: linear-gradient(170deg, var(--surface2), var(--surface)); border: 1px solid var(--border);
     border-radius: 14px; padding: 24px; display: flex; flex-direction: column; transition: transform .25s, border-color .25s; }
-  .mod-card:hover { transform: translateY(-5px); border-color: rgba(94,187,43,0.5); }
-  .mod-ver { font-family: monospace; font-size: 11px; color: var(--green-bright); background: rgba(94,187,43,0.1);
+  .mod-card:hover { transform: translateY(-5px); border-color: rgba(236,72,153,0.5); }
+  .mod-ver { font-family: monospace; font-size: 11px; color: var(--green-bright); background: rgba(236,72,153,0.1);
     border-radius: 6px; padding: 2px 8px; align-self: flex-start; margin-bottom: 12px; }
   .mod-name { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
   .mod-desc { font-size: 14px; color: var(--muted); flex: 1; margin-bottom: 18px; }
   .mod-dl { display: block; text-align: center; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 13px;
-    color: #061003; background: var(--green); border-radius: 9px; padding: 13px; text-decoration: none; }
+    color: #2A0A18; background: var(--green); border-radius: 9px; padding: 13px; text-decoration: none; }
   .mod-dl:hover { background: var(--green-bright); }
 
   .toast { position: fixed; bottom: 26px; left: 50%; transform: translate(-50%, 120px); z-index: 500; background: var(--surface2);
-    border: 1px solid rgba(94,187,43,0.6); border-radius: 10px; padding: 13px 24px; font-weight: 600; font-size: 14px;
+    border: 1px solid rgba(236,72,153,0.6); border-radius: 10px; padding: 13px 24px; font-weight: 600; font-size: 14px;
     transition: transform .35s; }
   .toast.show { transform: translate(-50%, 0); }
 
@@ -124,6 +128,7 @@
 </nav>
 
 <header class="hero">
+  <img class="hero-creeper" src="img/creeper.png" alt="Creeper">
   <div class="hero-badge" id="heroBadge">● JAVA · 1.20.1</div>
   <h1>FATHER<br><span class="gr">CRAFT</span></h1>
   <p class="hero-sub">El servidor donde la familia juega. Copia la IP, instala los mods y entra.</p>
@@ -176,14 +181,25 @@
 //  EDITA TUS DATOS AQUÍ
 // ═══════════════════════════════════════════
 const CONFIG = {
-  ip: "PON_TU_IP_AQUI",        // ej: "play.fathercraft.com" (puerto aparte si lleva: "host:25565")
-  edition: "JAVA",             // JAVA o BEDROCK
-  version: "1.20.1",
+  ip: "de2.spaceify.eu:25530",
+  edition: "JAVA",
+  version: "1.21.1",
   mods: [
-    // { nombre, version, descripcion, url } — url puede ser link o archivo en mods/archivo.jar
-    { nombre: "Mod ejemplo 1", version: "1.20.1", descripcion: "Reemplázame con tu primer mod obligatorio.", url: "#" },
-    { nombre: "Mod ejemplo 2", version: "1.20.1", descripcion: "Reemplázame con tu segundo mod.", url: "#" },
-    { nombre: "Mod ejemplo 3", version: "1.20.1", descripcion: "Reemplázame con tu tercer mod.", url: "#" },
+    { nombre: "Fabric API", version: "1.21.1", descripcion: "Base obligatoria para que funcionen todos los mods Fabric.", url: "mods/jars/fabric-api-0.116.15%2B1.21.1.jar" },
+    { nombre: "Fabric Language Kotlin", version: "1.21.1", descripcion: "Lenguaje requerido por varios mods del pack.", url: "mods/jars/fabric-language-kotlin-1.14.1+kotlin.2.4.20.jar" },
+    { nombre: "Architectury API", version: "1.21.1", descripcion: "Librería intermedia que usan varios mods.", url: "mods/jars/architectury-13.0.11-fabric.jar" },
+    { nombre: "Cloth Config", version: "1.21.1", descripcion: "Librería de configuración para los menús de mods.", url: "mods/jars/cloth-config-15.0.140-fabric.jar" },
+    { nombre: "YetAnotherConfigLib", version: "1.21.1", descripcion: "Otra librería de configuración necesaria.", url: "mods/jars/yet_another_config_lib_v3-3.8.2+1.21.1-fabric.jar" },
+    { nombre: "Fzzy Config", version: "1.21.1", descripcion: "Configuración usada por Simply Swords y otros.", url: "mods/jars/fzzy_config-0.7.6+1.21.jar" },
+    { nombre: "GeckoLib", version: "1.21.1", descripcion: "Motor de animaciones para armaduras y mods.", url: "mods/jars/geckolib-fabric-1.21.1-4.8.4.jar" },
+    { nombre: "JEI", version: "1.21.1", descripcion: "Ve todas las recetas y objetos del juego.", url: "mods/jars/jei-1.21.1-fabric-19.51.0.418.jar" },
+    { nombre: "Simply Swords", version: "1.21.1", descripcion: "Espadas nuevas con habilidades únicas.", url: "mods/jars/simplyswords-fabric-1.70.2-1.21.1.jar" },
+    { nombre: "Simply Tooltips", version: "1.21.1", descripcion: "Mejora la info al pasar el mouse por los objetos.", url: "mods/jars/SimplyTooltips-fabric-0.1.5.jar" },
+    { nombre: "Voice Chat", version: "1.21.1", descripcion: "Habla por voz con los que estén cerca en el juego.", url: "mods/jars/voicechat-fabric-1.21.1-2.6.23.jar" },
+    { nombre: "Fantasy Armor", version: "1.21.1", descripcion: "Set de armaduras de fantasía.", url: "mods/jars/fantasy_armor-fabric-1.2.4-1.21.1.jar" },
+    { nombre: "Armor of the Ages", version: "1.21.1", descripcion: "Más armaduras por eras para tu personaje.", url: "mods/jars/armoroftheages-fabric-1.21.1-1.5.10.jar" },
+    { nombre: "Auth Bandz", version: "1.21.1", descripcion: "Login del servidor Bandz.", url: "mods/jars/authbandz-1.0.0-server-1.21.1.jar" },
+    { nombre: "Auth Father", version: "1.21.1", descripcion: "Login del servidor FatherCraft.", url: "mods/jars/authfather-1.0.0-server-1.21.1.jar" },
   ],
 };
 // ═══════════════════════════════════════════
