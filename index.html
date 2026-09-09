@@ -25,11 +25,15 @@
   ::selection { background: var(--green); color: #2A0A18; }
   a { color: inherit; }
 
+  .bg-photo { position: fixed; inset: 0; z-index: -3; pointer-events: none;
+    background: url('img/fondo.jpg') center 30%/cover no-repeat; }
+  .bg-photo::after { content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(10,4,9,0.55) 0%, rgba(10,4,9,0.72) 55%, rgba(10,4,9,0.88) 100%); }
   .bg-fx { position: fixed; inset: 0; z-index: -2; pointer-events: none;
     background:
       radial-gradient(900px 500px at 80% -10%, rgba(236,72,153,0.10), transparent 60%),
       radial-gradient(700px 500px at 10% 40%, rgba(236,72,153,0.05), transparent 55%),
-      var(--bg); }
+      transparent; }
   .bg-grid { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .6;
     background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
     background-size: 32px 32px;
@@ -119,6 +123,7 @@
 </head>
 <body>
 
+<div class="bg-photo"></div>
 <div class="bg-fx"></div>
 <div class="bg-grid"></div>
 
@@ -133,7 +138,7 @@
 </nav>
 
 <header class="hero">
-  <img class="hero-creeper" src="img/creeper.png" alt="Creeper">
+  <img class="hero-creeper" src="img/creeper.gif" onerror="this.onerror=null;this.src='img/creeper.png'" alt="Creeper">
   <div class="hero-badge" id="heroBadge">● JAVA · 1.20.1</div>
   <h1>FATHER<br><span class="gr">CRAFT</span></h1>
   <div class="ip-box">
