@@ -113,9 +113,13 @@
     color: #2A0A18; background: var(--green); border-radius: 9px; padding: 13px; text-decoration: none; }
   .mod-dl:hover { background: var(--green-bright); }
 
-  .toast { position: fixed; bottom: 26px; left: 50%; transform: translate(-50%, 120px); z-index: 500; background: var(--surface2);
-    border: 1px solid rgba(236,72,153,0.6); border-radius: 10px; padding: 13px 24px; font-weight: 600; font-size: 14px;
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translate(-50%, 120px); z-index: 500; background: rgba(20,11,17,0.92);
+    border: none; border-radius: 12px; padding: 13px 24px; font-weight: 700; font-size: 14px; letter-spacing: 1px;
+    color: #F9A8D4; text-shadow: 0 0 10px rgba(236,72,153,0.9), 0 0 26px rgba(236,72,153,0.5);
+    display: flex; align-items: center; gap: 10px;
     transition: transform .35s; }
+  .toast svg { width: 18px; height: 18px; fill: none; stroke: #F9A8D4; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 6px rgba(236,72,153,0.9)); }
   .toast.show { transform: translate(-50%, 0); }
 
   footer { text-align: center; padding: 30px 20px 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
@@ -190,7 +194,7 @@
   </div>
 </section>
 
-<div class="toast" id="toast">IP copiada ✅</div>
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span id="toastText">IP copiada</span></div>
 
 <footer>© 2026 <span>FATHERCRAFT</span> x NORWING by EVILJORDVN.</footer>
 
@@ -224,13 +228,13 @@ const CONFIG = {
 
 function toast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  document.getElementById('toastText').textContent = msg;
   t.classList.add('show');
   clearTimeout(t._t);
   t._t = setTimeout(() => t.classList.remove('show'), 2500);
 }
 function copyIp() {
-  const done = () => toast('IP copiada ✅');
+  const done = () => toast('IP copiada');
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(CONFIG.ip).then(done).catch(() => fallbackCopy(done));
   } else fallbackCopy(done);
@@ -300,10 +304,10 @@ document.getElementById('packBtn').addEventListener('click', async () => {
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 60000);
     btn.textContent = original;
-    toast('Pack descargado: descomprímelo en tu carpeta mods ✅');
+    toast('Pack descargado: descomprímelo en tu carpeta mods');
   } catch (e) {
     btn.textContent = original;
-    toast('Falló la descarga, intenta mod por mod ⚠️');
+    toast('Falló la descarga, intenta mod por mod');
   }
   btn.disabled = false;
 });
