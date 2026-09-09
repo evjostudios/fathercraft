@@ -44,8 +44,7 @@
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
     padding: 0 40px; height: 68px; background: rgba(13,18,11,0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border); }
-  .nav-logo { font-family: var(--font-pixel); font-size: 16px; color: #fff; text-decoration: none; letter-spacing: 1px; }
-  .nav-logo span { color: var(--green-bright); text-shadow: 0 0 14px rgba(124,252,84,0.5); }
+  .nav-logo img { height: 38px; width: auto; display: block; object-fit: contain; }
   .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
   .nav-links a { font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); text-decoration: none; }
   .nav-links a:hover { color: #fff; }
@@ -129,7 +128,7 @@
 <div class="bg-grid"></div>
 
 <nav>
-  <a href="#" class="nav-logo">FATHER<span>CRAFT</span></a>
+  <a href="#" class="nav-logo"><img src="img/logito.png" alt="FATHERCRAFT"></a>
   <ul class="nav-links">
     <li><a href="#jugar">Jugar</a></li>
     <li><a href="#mods">Mods</a></li>
