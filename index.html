@@ -42,9 +42,10 @@
             mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%); }
 
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
-    padding: 0 40px; height: 68px; background: rgba(13,18,11,0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    padding: 0 40px; height: 122px; background: rgba(20,11,17,0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border); }
-  .nav-logo img { height: 38px; width: auto; display: block; object-fit: contain; }
+  .nav-logo { margin-left: 44px; }
+  .nav-logo img { height: 110px; width: auto; display: block; object-fit: contain; }
   .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
   .nav-links a { font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); text-decoration: none; }
   .nav-links a:hover { color: #fff; }
@@ -53,7 +54,7 @@
   .nav-ip:hover { background: rgba(236,72,153,0.2); }
 
   .hero { min-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 120px 22px 70px; position: relative; }
+    text-align: center; padding: 165px 22px 70px; position: relative; }
   .hero-badge { font-family: var(--font-pixel); font-size: 10px; color: var(--green-bright); letter-spacing: 2px;
     border: 1px solid rgba(236,72,153,0.45); background: rgba(236,72,153,0.08); border-radius: 100px; padding: 10px 20px; margin-bottom: 28px; }
   .hero h1 { font-family: var(--font-pixel); font-size: clamp(34px, 8vw, 96px); line-height: 1.25; color: #fff;
