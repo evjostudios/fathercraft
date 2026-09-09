@@ -22,7 +22,9 @@
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    -webkit-user-select: none; user-select: none; }
+  .ip-box code { -webkit-user-select: text; user-select: text; }
   ::selection { background: var(--green); color: #2A0A18; }
   a { color: inherit; }
 
@@ -238,9 +240,21 @@ function fallbackCopy(done) {
   ta.value = CONFIG.ip;
   document.body.appendChild(ta);
   ta.select();
-  try { document.execCommand('copy'); done(); } catch (e) {}
+  try { window.__allowCopy = true; document.execCommand('copy'); done(); } catch (e) {}
+  window.__allowCopy = false;
   ta.remove();
 }
+// Solo se puede copiar desde las cajas de IP
+document.addEventListener('copy', e => {
+  if (window.__allowCopy) return;
+  const sel = window.getSelection();
+  const node = sel && sel.anchorNode ? (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement) : null;
+  if (node && node.closest && node.closest('.ip-box')) return;
+  e.preventDefault();
+});
+document.addEventListener('contextmenu', e => {
+  if (!(e.target.closest && e.target.closest('.ip-box'))) e.preventDefault();
+});
 
 document.getElementById('ipText').textContent = CONFIG.ip;
 document.getElementById('ipText2').textContent = CONFIG.ip;
