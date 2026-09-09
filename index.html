@@ -320,9 +320,14 @@ document.getElementById('packBtn').addEventListener('click', async () => {
     scene.add(key);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x331122, 0.45));
     const gltf = await new GLTFLoader().loadAsync('img/creeper.glb');
+    const holder = new THREE.Group();
     const model = gltf.scene;
-    scene.add(model);
-    const box = new THREE.Box3().setFromObject(model);
+    model.rotation.x = -Math.PI / 2;
+    holder.add(model);
+    scene.add(holder);
+    const standBox = new THREE.Box3().setFromObject(model);
+    model.position.y -= standBox.min.y;
+    const box = new THREE.Box3().setFromObject(holder);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     const radius = Math.max(size.x, size.y, size.z);
@@ -352,7 +357,7 @@ document.getElementById('packBtn').addEventListener('click', async () => {
       last = now;
       const dx = e.clientX - px, dy = e.clientY - py;
       px = e.clientX; py = e.clientY;
-      model.rotation.y += dx * 0.009;
+      holder.rotation.y += dx * 0.009;
       tilt = Math.max(-0.25, Math.min(0.55, tilt + dy * 0.004));
       vel = 0.75 * vel + 0.25 * ((dx * 0.009) / dt);
       vel = Math.max(-9, Math.min(9, vel));
@@ -360,7 +365,7 @@ document.getElementById('packBtn').addEventListener('click', async () => {
     const stop = () => { dragging = false; };
     canvas.addEventListener('pointerup', stop);
     canvas.addEventListener('pointercancel', stop);
-    model.rotation.x = tilt;
+    holder.rotation.x = tilt;
     let prev = performance.now();
     (function loop() {
       requestAnimationFrame(loop);
@@ -369,9 +374,9 @@ document.getElementById('packBtn').addEventListener('click', async () => {
       prev = now;
       if (!dragging) {
         vel += (BASE - vel) * (1 - Math.exp(-dt * (Math.abs(vel) > BASE ? FRICTION : 0.9)));
-        model.rotation.y += vel * dt;
+        holder.rotation.y += vel * dt;
       }
-      model.rotation.x += (tilt - model.rotation.x) * Math.min(1, dt * 10);
+      holder.rotation.x += (tilt - holder.rotation.x) * Math.min(1, dt * 10);
       renderer.render(scene, camera);
     })();
   } catch (e) {
