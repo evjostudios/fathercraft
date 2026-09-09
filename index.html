@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATHERCRAFT — Servidor de Minecraft</title>
+<meta name="description" content="FATHERCRAFT — Servidor de Minecraft. Copia la IP, descarga los mods y entra a jugar.">
+<meta name="theme-color" content="#0d120b">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛏️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #5EBB2B; --green-bright: #7CFC54; --green-dark: #2E7D16;
+    --dirt: #6B4A2B; --stone: #8a8a8a;
+    --bg: #0d120b; --surface: #141a12; --surface2: #1b2318;
+    --border: rgba(255,255,255,0.08); --text: #F2F2F0; --muted: #9aa392;
+    --font-pixel: 'Press Start 2P', monospace; --font-body: 'Barlow', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--green); color: #061003; }
+  a { color: inherit; }
+
+  .bg-fx { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(94,187,43,0.10), transparent 60%),
+      radial-gradient(700px 500px at 10% 40%, rgba(94,187,43,0.05), transparent 55%),
+      var(--bg); }
+  .bg-grid { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .6;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%); }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 68px; background: rgba(13,18,11,0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: var(--font-pixel); font-size: 16px; color: #fff; text-decoration: none; letter-spacing: 1px; }
+  .nav-logo span { color: var(--green-bright); text-shadow: 0 0 14px rgba(124,252,84,0.5); }
+  .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+  .nav-links a { font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+  .nav-links a:hover { color: #fff; }
+  .nav-ip { font-family: monospace; font-size: 13px; background: rgba(94,187,43,0.12); border: 1px solid rgba(94,187,43,0.45);
+    color: var(--green-bright); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+  .nav-ip:hover { background: rgba(94,187,43,0.2); }
+
+  .hero { min-height: 92vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 120px 22px 70px; position: relative; }
+  .hero-badge { font-family: var(--font-pixel); font-size: 10px; color: var(--green-bright); letter-spacing: 2px;
+    border: 1px solid rgba(94,187,43,0.45); background: rgba(94,187,43,0.08); border-radius: 100px; padding: 10px 20px; margin-bottom: 28px; }
+  .hero h1 { font-family: var(--font-pixel); font-size: clamp(34px, 8vw, 96px); line-height: 1.25; color: #fff;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.55), 0 0 44px rgba(94,187,43,0.25); margin-bottom: 10px; }
+  .hero h1 .gr { color: var(--green-bright); }
+  .hero-sub { color: var(--muted); font-size: 18px; margin: 18px 0 34px; max-width: 560px; }
+  .ip-box { display: flex; align-items: center; gap: 0; max-width: 520px; width: 100%; background: #000;
+    border: 2px solid rgba(94,187,43,0.5); border-radius: 12px; overflow: hidden; box-shadow: 0 0 34px rgba(94,187,43,0.18); }
+  .ip-box code { flex: 1; font-family: monospace; font-size: clamp(15px, 3vw, 20px); color: var(--green-bright);
+    padding: 16px 20px; text-align: left; overflow-x: auto; white-space: nowrap; }
+  .ip-box button { font-family: var(--font-pixel); font-size: 11px; color: #061003; background: var(--green);
+    border: none; padding: 0 26px; align-self: stretch; cursor: pointer; }
+  .ip-box button:hover { background: var(--green-bright); }
+  .ip-hint { font-size: 13px; color: var(--muted); margin-top: 12px; min-height: 20px; }
+  .hero-stats { display: flex; gap: 44px; margin-top: 46px; flex-wrap: wrap; justify-content: center; }
+  .stat-num { font-family: var(--font-pixel); font-size: 22px; color: #fff; }
+  .stat-num span { color: var(--green-bright); }
+  .stat-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+
+  section.block { max-width: 1080px; margin: 0 auto; padding: 70px 22px; }
+  .sec-tag { font-family: var(--font-pixel); font-size: 10px; color: var(--green-bright); letter-spacing: 2px; margin-bottom: 16px; }
+  .sec-title { font-family: var(--font-pixel); font-size: clamp(20px, 4vw, 36px); line-height: 1.5; color: #fff; margin-bottom: 14px; }
+  .sec-desc { color: var(--muted); max-width: 640px; margin-bottom: 34px; }
+
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .step { background: linear-gradient(170deg, var(--surface2), var(--surface)); border: 1px solid var(--border);
+    border-radius: 14px; padding: 26px; }
+  .step-num { font-family: var(--font-pixel); font-size: 20px; color: var(--green-bright); margin-bottom: 14px; }
+  .step h3 { font-size: 18px; margin-bottom: 8px; }
+  .step p { font-size: 14px; color: var(--muted); }
+  .step code { font-family: monospace; background: #000; border: 1px solid var(--border); border-radius: 6px;
+    padding: 1px 8px; color: var(--green-bright); font-size: 13px; }
+
+  .mods-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .mod-card { background: linear-gradient(170deg, var(--surface2), var(--surface)); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px; display: flex; flex-direction: column; transition: transform .25s, border-color .25s; }
+  .mod-card:hover { transform: translateY(-5px); border-color: rgba(94,187,43,0.5); }
+  .mod-ver { font-family: monospace; font-size: 11px; color: var(--green-bright); background: rgba(94,187,43,0.1);
+    border-radius: 6px; padding: 2px 8px; align-self: flex-start; margin-bottom: 12px; }
+  .mod-name { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .mod-desc { font-size: 14px; color: var(--muted); flex: 1; margin-bottom: 18px; }
+  .mod-dl { display: block; text-align: center; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 13px;
+    color: #061003; background: var(--green); border-radius: 9px; padding: 13px; text-decoration: none; }
+  .mod-dl:hover { background: var(--green-bright); }
+
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translate(-50%, 120px); z-index: 500; background: var(--surface2);
+    border: 1px solid rgba(94,187,43,0.6); border-radius: 10px; padding: 13px 24px; font-weight: 600; font-size: 14px;
+    transition: transform .35s; }
+  .toast.show { transform: translate(-50%, 0); }
+
+  footer { text-align: center; padding: 30px 20px 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+  footer span { color: var(--green-bright); }
+  @media (max-width: 700px) {
+    nav { padding: 0 18px; }
+    .nav-links a:not(.nav-keep) { display: none; }
+    section.block { padding: 50px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-fx"></div>
+<div class="bg-grid"></div>
+
+<nav>
+  <a href="#" class="nav-logo">FATHER<span>CRAFT</span></a>
+  <ul class="nav-links">
+    <li><a href="#jugar">Jugar</a></li>
+    <li><a href="#mods">Mods</a></li>
+    <li><a href="#pasos">Pasos</a></li>
+    <li><button class="nav-ip nav-keep" id="navIp" title="Copiar IP">⛏️ <span id="navIpText">...</span></button></li>
+  </ul>
+</nav>
+
+<header class="hero">
+  <div class="hero-badge" id="heroBadge">● JAVA · 1.20.1</div>
+  <h1>FATHER<br><span class="gr">CRAFT</span></h1>
+  <p class="hero-sub">El servidor donde la familia juega. Copia la IP, instala los mods y entra.</p>
+  <div class="ip-box">
+    <code id="ipText">...</code>
+    <button id="ipBtn">COPIAR</button>
+  </div>
+  <div class="ip-hint" id="ipHint">Toca copiar y pégala en multijugador</div>
+  <div class="hero-stats">
+    <div><div class="stat-num" id="statVer">1.20<span>.1</span></div><div class="stat-label">Versión</div></div>
+    <div><div class="stat-num"><span id="statMods">3</span></div><div class="stat-label">Mods</div></div>
+    <div><div class="stat-num">24<span>/7</span></div><div class="stat-label">Online</div></div>
+  </div>
+</header>
+
+<section class="block" id="pasos">
+  <div class="sec-tag">// CÓMO ENTRAR</div>
+  <h2 class="sec-title">JUGAR EN 3 PASOS</h2>
+  <p class="sec-desc">Sin vueltas: IP, mods y a jugar.</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><h3>Copia la IP</h3><p>Pulsa el botón copiar. La IP es <code id="stepIp">...</code></p></div>
+    <div class="step"><div class="step-num">02</div><h3>Instala los mods</h3><p>Descarga el pack de abajo (misma versión del servidor) y mételo en tu carpeta <code>mods</code>.</p></div>
+    <div class="step"><div class="step-num">03</div><h3>Entra</h3><p>Minecraft → Multijugador → Añadir servidor → pega la IP → ¡a jugar!</p></div>
+  </div>
+</section>
+
+<section class="block" id="mods">
+  <div class="sec-tag">// DESCARGAS</div>
+  <h2 class="sec-title">MODS DEL SERVIDOR</h2>
+  <p class="sec-desc">Instala estos mods para entrar. Todos deben coincidir con la versión del servidor.</p>
+  <div class="mods-grid" id="modsGrid"></div>
+</section>
+
+<section class="block" id="jugar">
+  <div class="sec-tag">// IP DIRECTA</div>
+  <h2 class="sec-title">¿LISTO?</h2>
+  <p class="sec-desc">Copia la IP y nos vemos dentro.</p>
+  <div class="ip-box" style="margin:0 auto;">
+    <code id="ipText2">...</code>
+    <button id="ipBtn2">COPIAR</button>
+  </div>
+</section>
+
+<div class="toast" id="toast">IP copiada ✅</div>
+
+<footer>© 2026 <span>FATHERCRAFT</span> — Juega en familia.</footer>
+
+<script>
+// ═══════════════════════════════════════════
+//  EDITA TUS DATOS AQUÍ
+// ═══════════════════════════════════════════
+const CONFIG = {
+  ip: "PON_TU_IP_AQUI",        // ej: "play.fathercraft.com" (puerto aparte si lleva: "host:25565")
+  edition: "JAVA",             // JAVA o BEDROCK
+  version: "1.20.1",
+  mods: [
+    // { nombre, version, descripcion, url } — url puede ser link o archivo en mods/archivo.jar
+    { nombre: "Mod ejemplo 1", version: "1.20.1", descripcion: "Reemplázame con tu primer mod obligatorio.", url: "#" },
+    { nombre: "Mod ejemplo 2", version: "1.20.1", descripcion: "Reemplázame con tu segundo mod.", url: "#" },
+    { nombre: "Mod ejemplo 3", version: "1.20.1", descripcion: "Reemplázame con tu tercer mod.", url: "#" },
+  ],
+};
+// ═══════════════════════════════════════════
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2500);
+}
+function copyIp() {
+  const done = () => toast('IP copiada ✅');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(CONFIG.ip).then(done).catch(() => fallbackCopy(done));
+  } else fallbackCopy(done);
+}
+function fallbackCopy(done) {
+  const ta = document.createElement('textarea');
+  ta.value = CONFIG.ip;
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) {}
+  ta.remove();
+}
+
+document.getElementById('ipText').textContent = CONFIG.ip;
+document.getElementById('ipText2').textContent = CONFIG.ip;
+document.getElementById('navIpText').textContent = CONFIG.ip;
+document.getElementById('stepIp').textContent = CONFIG.ip;
+document.getElementById('heroBadge').textContent = '● ' + CONFIG.edition + ' · ' + CONFIG.version;
+document.getElementById('statVer').innerHTML = CONFIG.version.replace('.', '<span>.') + '</span>';
+document.getElementById('statMods').textContent = CONFIG.mods.length;
+document.getElementById('ipBtn').addEventListener('click', copyIp);
+document.getElementById('ipBtn2').addEventListener('click', copyIp);
+document.getElementById('navIp').addEventListener('click', copyIp);
+
+document.getElementById('modsGrid').innerHTML = CONFIG.mods.map(m => `
+  <div class="mod-card">
+    <span class="mod-ver">${m.version}</span>
+    <div class="mod-name">${m.nombre}</div>
+    <div class="mod-desc">${m.descripcion}</div>
+    <a class="mod-dl" href="${m.url}" ${/^https?:/.test(m.url) ? 'target="_blank" rel="noopener"' : 'download'}>Descargar ⬇</a>
+  </div>`).join('');
+</script>
+</body>
+</html>
