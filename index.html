@@ -80,6 +80,11 @@
     border: none; padding: 0 26px; align-self: stretch; cursor: pointer; }
   .ip-box button:hover { background: var(--green-bright); }
   .ip-hint { font-size: 13px; color: var(--muted); margin-top: 12px; min-height: 20px; }
+  .join-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+  .join-row span { font-size: 14px; color: var(--muted); }
+  .btn-discord { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none;
+    background: #5865F2; color: #fff; border-radius: 8px; padding: 10px 20px; }
+  .btn-discord:hover { background: #4752C4; color: #fff; }
   .hero-stats { display: flex; gap: 44px; margin-top: 46px; flex-wrap: wrap; justify-content: center; }
   .stat-num { font-family: var(--font-pixel); font-size: 22px; color: #fff; }
   .stat-num span { color: var(--green-bright); }
@@ -159,6 +164,7 @@
     <button id="ipBtn">COPIAR</button>
   </div>
   <div class="ip-hint" id="ipHint">Toca copiar y pégala en multijugador</div>
+  <div class="join-row"><a class="btn-discord" href="https://discord.gg/WdFMMVjk9N" target="_blank" rel="noopener">Discord</a><span>únete a nuestro discord</span></div>
   <div class="hero-stats">
     <div><div class="stat-num" id="statVer">1.20<span>.1</span></div><div class="stat-label">Versión</div></div>
     <div><div class="stat-num"><span id="statMods">1</span></div><div class="stat-label">Mod</div></div>
@@ -192,6 +198,7 @@
     <code id="ipText2">...</code>
     <button id="ipBtn2">COPIAR</button>
   </div>
+  <div class="join-row"><a class="btn-discord" href="https://discord.gg/WdFMMVjk9N" target="_blank" rel="noopener">Discord</a><span>únete a nuestro discord</span></div>
 </section>
 
 <div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span id="toastText">IP copiada</span></div>
